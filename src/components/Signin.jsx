@@ -6,15 +6,17 @@ const Signin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const [loading, setLoading] = useState("");
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  const [hover, setHover] = useState(false);
 
   const navigate = useNavigate();
 
   const handlesubmit = async (e) => {
     e.preventDefault();
 
-    setLoading("Please wait while we log you in...");
+    setLoading(true);
     setError("");
 
     try {
@@ -23,36 +25,42 @@ const Signin = () => {
       formdata.append("password", password);
 
       const response = await axios.post(
-        "https://kbenkamotho.alwaysdata.net/api/signin",
+        "http://marthawaruix.alwaysdata.net/api/signin",
         formdata
       );
 
-      setLoading("");
+      setLoading(false);
 
       if (response.data.user) {
-        // Save user in localStorage
-        localStorage.setItem(
-          "user",
-          JSON.stringify(response.data.user)
-        );
-
+        localStorage.setItem("user", JSON.stringify(response.data.user));
         navigate("/");
       } else {
         setError("Login failed. Try again.");
       }
     } catch (err) {
-      setLoading("");
-      setError("Something went wrong. Try again.");
+      setLoading(false);
+      setError(
+        err.response?.data?.message || "Something went wrong. Try again."
+      );
     }
   };
 
   return (
     <div className="row justify-content-center mt-4">
       <div className="col-md-6 card shadow p-4">
-        <h1 className="text-primary">Sign In</h1>
+        <h1 style={{ color: "#16A085" }}>Sign In</h1>
 
-        <h5 className="text-info">{loading}</h5>
-        <h4 className="text-danger">{error}</h4>
+        {loading && (
+          <h6 style={{ color: "#16A085" }}>
+            Logging you in...
+          </h6>
+        )}
+
+        {error && (
+          <h6 style={{ color: "red" }}>
+            {error}
+          </h6>
+        )}
 
         <form onSubmit={handlesubmit}>
           <input
@@ -75,11 +83,26 @@ const Signin = () => {
           />
           <br />
 
-          <input
+          <button
             type="submit"
-            value="Signin"
-            className="btn btn-primary"
-          />
+            disabled={loading}
+            onMouseEnter={() => setHover(true)}
+            onMouseLeave={() => setHover(false)}
+            style={{
+              backgroundColor: hover ? "#138D75" : "#16A085",
+              color: "white",
+              border: "none",
+              padding: "10px",
+              width: "100%",
+              borderRadius: "8px",
+              cursor: "pointer",
+              transition: "0.2s",
+              transform: hover ? "scale(1.03)" : "scale(1)",
+            }}
+          >
+            {loading ? "Signing in..." : "Sign In"}
+          </button>
+
           <br />
           <br />
 

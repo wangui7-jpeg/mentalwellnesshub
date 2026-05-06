@@ -3,30 +3,18 @@ import { useState, useEffect } from "react";
 export default function BreathingExercise() {
   const [active, setActive] = useState(false);
   const [phase, setPhase] = useState("Ready");
-  const [scale, setScale] = useState(1);
+  const [hover, setHover] = useState(false);
 
   useEffect(() => {
-    let interval;
+    if (!active) return;
 
-    if (active) {
-      const steps = [
-        { text: "Inhale 🌿", size: 1.4 },
-        { text: "Hold 🌿", size: 1.4 },
-        { text: "Exhale 🌿", size: 1 },
-      ];
+    const steps = ["Inhale 🌿", "Hold 🌬️", "Exhale 💚"];
+    let i = 0;
 
-      let i = 0;
-
-      interval = setInterval(() => {
-        setPhase(steps[i].text);
-        setScale(steps[i].size);
-
-        i = (i + 1) % steps.length;
-      }, 2000);
-    } else {
-      setPhase("Ready");
-      setScale(1);
-    }
+    const interval = setInterval(() => {
+      setPhase(steps[i]);
+      i = (i + 1) % steps.length;
+    }, 4000);
 
     return () => clearInterval(interval);
   }, [active]);
@@ -35,19 +23,19 @@ export default function BreathingExercise() {
     <div style={styles.card}>
       <h3>Breathing Exercise 🌬️</h3>
 
-      <div
-        style={{
-          ...styles.circle,
-          transform: `scale(${scale})`,
-          transition: "transform 2s ease-in-out",
-        }}
-      >
-        <h2>{phase}</h2>
+      <div style={styles.circle}>
+        {phase}
       </div>
 
       <button
         onClick={() => setActive(!active)}
-        style={styles.button}
+        onMouseEnter={() => setHover(true)}
+        onMouseLeave={() => setHover(false)}
+        style={{
+          ...styles.button,
+          transform: hover ? "scale(1.08)" : "scale(1)",
+          backgroundColor: hover ? "#138D75" : "#16A085",
+        }}
       >
         {active ? "Stop" : "Start"}
       </button>
@@ -57,25 +45,35 @@ export default function BreathingExercise() {
 
 const styles = {
   card: {
-    marginTop: "20px",
-    padding: "15px",
+    backgroundColor: "#FFFFFF",
+    border: "1px solid #A3E4D7",
     borderRadius: "12px",
-    backgroundColor: "#e3f2fd",
+    padding: "15px",
     textAlign: "center",
   },
+
   circle: {
-    margin: "20px auto",
-    width: "150px",
-    height: "150px",
+    margin: "15px auto",
+    width: "120px",
+    height: "120px",
     borderRadius: "50%",
-    backgroundColor: "#90caf9",
+    border: "2px solid #16A085",
     display: "flex",
-    alignItems: "center",
     justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#E8F8F5",
+    fontWeight: "bold",
+    color: "#16A085",
   },
+
   button: {
-    padding: "10px 15px",
     marginTop: "10px",
+    backgroundColor: "#16A085",
+    color: "white",
+    border: "none",
+    padding: "8px 14px",
+    borderRadius: "20px",
     cursor: "pointer",
+    transition: "0.2s ease",
   },
 };

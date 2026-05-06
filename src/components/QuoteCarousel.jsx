@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function QuoteCarousel() {
   const data = [
@@ -18,89 +18,113 @@ export default function QuoteCarousel() {
 
   const [index, setIndex] = useState(0);
 
+  // 🌿 auto slide
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setIndex((prev) => (prev + 1) % data.length);
+    }, 6000);
+
+    return () => clearInterval(interval);
+  }, []);
+
   const next = () => {
-    setIndex((index + 1) % data.length);
+    setIndex((prev) => (prev + 1) % data.length);
   };
 
   const prev = () => {
-    setIndex(index === 0 ? data.length - 1 : index - 1);
+    setIndex((prev) =>
+      prev === 0 ? data.length - 1 : prev - 1
+    );
   };
 
   return (
     <div style={styles.container}>
-      
-      {/* IMAGE WRAPPER */}
-      <div style={styles.imageWrapper}>
-        <img src={data[index].img} alt="slide" style={styles.img} />
+      <div style={styles.wrapper}>
 
-        {/* TEXT OVERLAY */}
+        <img
+          src={data[index].img}
+          alt="quote"
+          style={styles.img}
+        />
+
         <div style={styles.overlay}>
-          <h2 style={styles.text}>{data[index].text}</h2>
+          <h2 style={styles.text}>
+            {data[index].text}
+          </h2>
         </div>
 
-        {/* LEFT ARROW */}
-        <button onClick={prev} style={{ ...styles.arrow, left: "10px" }}>
+        <button
+          onClick={prev}
+          style={{ ...styles.arrow, left: "10px" }}
+        >
           ❮
         </button>
 
-        {/* RIGHT ARROW */}
-        <button onClick={next} style={{ ...styles.arrow, right: "10px" }}>
+        <button
+          onClick={next}
+          style={{ ...styles.arrow, right: "10px" }}
+        >
           ❯
         </button>
+
       </div>
     </div>
   );
 }
 
+/* 🌿 STYLES */
 const styles = {
   container: {
     marginTop: "20px",
     textAlign: "center",
   },
 
-  imageWrapper: {
+  wrapper: {
     position: "relative",
     width: "100%",
-    maxHeight: "300px",
+    maxWidth: "900px",
+    height: "320px",
+    margin: "0 auto",
+    borderRadius: "14px",
     overflow: "hidden",
-    borderRadius: "12px",
+    boxShadow: "0 4px 15px rgba(0,0,0,0.2)",
   },
 
   img: {
     width: "100%",
-    height: "300px",
+    height: "100%",
     objectFit: "cover",
+    transition: "0.4s ease-in-out",
   },
 
   overlay: {
     position: "absolute",
-    top: 0,
-    left: 0,
-    width: "100%",
-    height: "100%",
+    inset: 0,
+    backgroundColor: "rgba(0,0,0,0.35)",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "rgba(0,0,0,0.35)",
+    padding: "20px",
   },
 
   text: {
     color: "white",
     fontSize: "22px",
+    fontWeight: "600",
     textAlign: "center",
-    padding: "10px",
   },
 
   arrow: {
     position: "absolute",
     top: "50%",
     transform: "translateY(-50%)",
-    backgroundColor: "rgba(255,255,255,0.7)",
+    backgroundColor: "rgba(255,255,255,0.85)",
     border: "none",
+    width: "45px",
+    height: "45px",
     borderRadius: "50%",
-    width: "40px",
-    height: "40px",
-    fontSize: "18px",
     cursor: "pointer",
+    fontSize: "20px",
+    transition: "0.2s",
   },
 };

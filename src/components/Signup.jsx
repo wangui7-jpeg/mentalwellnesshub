@@ -8,14 +8,16 @@ const Signup = () => {
   const [password, setPassword] = useState("");
   const [phone, setPhone] = useState("");
 
-  const [loading, setLoading] = useState("");
+  const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
+
+  const [hover, setHover] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    setLoading("Please wait as registration is in progress...");
+    setLoading(true);
     setError("");
     setSuccess("");
 
@@ -27,13 +29,14 @@ const Signup = () => {
       formdata.append("phone", phone);
 
       const response = await axios.post(
-        "https://kbenkamotho.alwaysdata.net/api/signup",
+        "http://marthawaruix.alwaysdata.net/api/signup",
         formdata
       );
 
-      setLoading("");
+      setLoading(false);
       setSuccess(response.data.message);
 
+      // reset fields
       setUsername("");
       setEmail("");
       setPassword("");
@@ -41,22 +44,38 @@ const Signup = () => {
 
       setTimeout(() => {
         setSuccess("");
-      }, 5000);
+      }, 4000);
 
     } catch (err) {
-      setLoading("");
-      setError("Something went wrong. Try again.");
+      setLoading(false);
+      setError(
+        err.response?.data?.message || "Something went wrong. Try again."
+      );
     }
   };
 
   return (
     <div className="row justify-content-center mt-4">
       <div className="card col-md-6 shadow p-4">
-        <h1 className="text-primary">Sign Up</h1>
+        <h1 style={{ color: "#16A085" }}>Sign Up</h1>
 
-        <h5 className="text-info">{loading}</h5>
-        <h3 className="text-success">{success}</h3>
-        <h4 className="text-danger">{error}</h4>
+        {loading && (
+          <h6 style={{ color: "#16A085" }}>
+            Creating your account...
+          </h6>
+        )}
+
+        {success && (
+          <h6 style={{ color: "green" }}>
+            {success}
+          </h6>
+        )}
+
+        {error && (
+          <h6 style={{ color: "red" }}>
+            {error}
+          </h6>
+        )}
 
         <form onSubmit={handleSubmit}>
           <input
@@ -99,15 +118,31 @@ const Signup = () => {
           />
           <br />
 
-          <input
+          <button
             type="submit"
-            value="Signup"
-            className="btn btn-primary"
-          />
+            disabled={loading}
+            onMouseEnter={() => setHover(true)}
+            onMouseLeave={() => setHover(false)}
+            style={{
+              backgroundColor: hover ? "#138D75" : "#16A085",
+              color: "white",
+              border: "none",
+              padding: "10px",
+              width: "100%",
+              borderRadius: "8px",
+              cursor: "pointer",
+              transition: "0.2s",
+              transform: hover ? "scale(1.03)" : "scale(1)",
+            }}
+          >
+            {loading ? "Signing up..." : "Sign Up"}
+          </button>
+
           <br />
           <br />
 
-          Already have an account? <Link to="/signin">Signin</Link>
+          Already have an account?{" "}
+          <Link to="/signin">Signin</Link>
         </form>
       </div>
     </div>
