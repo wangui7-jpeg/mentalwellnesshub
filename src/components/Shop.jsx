@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export default function Shop() {
   const [products, setProducts] = useState([]);
@@ -9,7 +10,9 @@ export default function Shop() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // 🔗 API + IMAGE BASE URL
+  const navigate = useNavigate();
+
+  // 🔗 API + IMAGE URL
   const API_URL = "http://marthawaruix.alwaysdata.net/api/get_products";
   const IMG_URL = "http://marthawaruix.alwaysdata.net/static/images/";
 
@@ -45,7 +48,7 @@ export default function Shop() {
 
   return (
     <div style={styles.page}>
-      
+
       {/* HEADER */}
       <div style={styles.header}>
         <h1>📚 Mental Health Shop</h1>
@@ -54,14 +57,13 @@ export default function Shop() {
 
       {/* LOADING + ERROR */}
       {loading && <p style={{ textAlign: "center" }}>Loading products...</p>}
-      {error && <p style={{ color: "red", textAlign: "center" }}>{error}</p>}
+      {error && <p style={styles.error}>{error}</p>}
 
       {/* PRODUCTS */}
       <div style={styles.grid}>
         {products.map((item) => (
           <div key={item.product_id} style={styles.card}>
 
-            {/* IMAGE */}
             <img
               src={IMG_URL + item.product_photo}
               alt={item.product_name}
@@ -80,13 +82,7 @@ export default function Shop() {
 
             <button
               onClick={() => addToCart(item)}
-              onMouseEnter={() => setHovered(item.product_id)}
-              onMouseLeave={() => setHovered(null)}
-              style={{
-                ...styles.button,
-                backgroundColor:
-                  hovered === item.product_id ? "#138D75" : "#16A085",
-              }}
+              style={styles.button}
             >
               Add to Cart 🛒
             </button>
@@ -109,7 +105,7 @@ export default function Shop() {
           <h3>🛍️ Your Cart</h3>
 
           {cart.length === 0 ? (
-            <p>No items yet 🌿</p>
+            <p style={styles.empty}>No items yet 🌿</p>
           ) : (
             <>
               {cart.map((item, i) => (
@@ -125,6 +121,16 @@ export default function Shop() {
               ))}
 
               <h4 style={styles.total}>Total: Ksh {total}</h4>
+
+              {/* ✅ BUY NOW BUTTON */}
+              <button
+                onClick={() =>
+                  navigate("/makepayment", { state: { cart } })
+                }
+                style={styles.buyNowBtn}
+              >
+                Buy Now 💳
+              </button>
 
               <button onClick={clearCart} style={styles.clearBtn}>
                 Clear Cart
@@ -167,8 +173,6 @@ const styles = {
     borderRadius: "12px",
     padding: "15px",
     border: "1px solid #A3E4D7",
-    display: "flex",
-    flexDirection: "column",
   },
 
   image: {
@@ -176,7 +180,6 @@ const styles = {
     height: "180px",
     objectFit: "cover",
     borderRadius: "10px",
-    transition: "0.3s",
   },
 
   title: {
@@ -196,12 +199,12 @@ const styles = {
 
   button: {
     marginTop: "10px",
+    backgroundColor: "#16A085",
     color: "white",
     border: "none",
     padding: "10px",
     borderRadius: "8px",
     cursor: "pointer",
-    transition: "0.2s",
   },
 
   floatingCart: {
@@ -217,7 +220,6 @@ const styles = {
     justifyContent: "center",
     alignItems: "center",
     cursor: "pointer",
-    zIndex: 1000,
   },
 
   cartPopup: {
@@ -251,6 +253,18 @@ const styles = {
     color: "#16A085",
   },
 
+  buyNowBtn: {
+    marginTop: "10px",
+    width: "100%",
+    backgroundColor: "#1a73e8",
+    color: "white",
+    border: "none",
+    padding: "8px",
+    borderRadius: "6px",
+    fontWeight: "bold",
+    cursor: "pointer",
+  },
+
   clearBtn: {
     marginTop: "10px",
     width: "100%",
@@ -269,5 +283,15 @@ const styles = {
     border: "none",
     padding: "6px",
     borderRadius: "6px",
+  },
+
+  error: {
+    color: "red",
+    textAlign: "center",
+  },
+
+  empty: {
+    textAlign: "center",
+    color: "#777",
   },
 };

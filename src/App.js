@@ -15,6 +15,7 @@ import QuoteOfTheDay from "./components/QuoteOfTheDay";
 import BreathingExercise from "./components/BreathingExercise";
 import Chatbot from "./components/Chatbot";
 import Profile from "./components/Profile";
+import MakePayment from "./components/MakePayment";
 
 
 import Addproduct from "./components/Addproduct";
@@ -91,6 +92,7 @@ export default function App() {
           <Route path="/mentorship" element={<Mentorship />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/shop" element={<Shop />} />
+          <Route path="/makepayment" element={<MakePayment />} />
 
           {/* SHOP */}
           
