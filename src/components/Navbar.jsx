@@ -33,7 +33,12 @@ export default function Navbar() {
         <NavLink to="/" style={linkStyle}>Home</NavLink>
         <NavLink to="/about" style={linkStyle}>About</NavLink>
         <NavLink to="/shop" style={linkStyle}>Shop</NavLink>
-         <NavLink to="/sell" style={linkStyle}>Sell Books </NavLink>
+
+        {/* ✅ FIXED ROUTE */}
+        <NavLink to="/addproducts" style={linkStyle}>
+          Sell Books
+        </NavLink>
+
         <NavLink to="/mentorship" style={linkStyle}>Mentorship</NavLink>
 
         {!user ? (
@@ -43,9 +48,7 @@ export default function Navbar() {
           </>
         ) : (
           <>
-            <NavLink to="/profile" style={linkStyle}>
-              Profile
-            </NavLink>
+            <NavLink to="/profile" style={linkStyle}>Profile</NavLink>
 
             <span style={styles.user}>
               {user.username} 👋
@@ -98,6 +101,5 @@ const styles = {
     padding: "6px 10px",
     borderRadius: "6px",
     cursor: "pointer",
-    transition: "0.2s",
   },
 };

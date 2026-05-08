@@ -12,20 +12,20 @@ export default function Shop() {
 
   const navigate = useNavigate();
 
-  // 🔗 API + IMAGE URL
+  // APIs
   const API_URL = "http://marthawaruix.alwaysdata.net/api/get_products";
   const IMG_URL = "http://marthawaruix.alwaysdata.net/static/images/";
 
-  // 📦 FETCH PRODUCTS
+  // FETCH PRODUCTS
   const fetchProducts = async () => {
     try {
       setLoading(true);
       const res = await axios.get(API_URL);
       setProducts(res.data);
-      setLoading(false);
     } catch (err) {
-      setLoading(false);
       setError(err.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -33,7 +33,7 @@ export default function Shop() {
     fetchProducts();
   }, []);
 
-  // 🛒 CART FUNCTIONS
+  // CART
   const addToCart = (item) => {
     setCart((prev) => [...prev, item]);
   };
@@ -44,20 +44,37 @@ export default function Shop() {
 
   const clearCart = () => setCart([]);
 
-  const total = cart.reduce((sum, item) => sum + item.product_cost, 0);
+  const total = cart.reduce(
+    (sum, item) => sum + Number(item.product_cost || 0),
+    0
+  );
+
+  // 💳 BUY NOW → CHECKOUT
+  const handleBuyNow = () => {
+    if (cart.length === 0) {
+      alert("Your cart is empty!");
+      return;
+    }
+
+    // send cart + total to checkout page
+    navigate("/checkout", {
+      state: {
+        cart,
+        total,
+      },
+    });
+  };
 
   return (
     <div style={styles.page}>
 
-      {/* HEADER */}
       <div style={styles.header}>
         <h1>📚 Mental Health Shop</h1>
         <p>Journals & books for your healing journey 🌿</p>
       </div>
 
-      {/* LOADING + ERROR */}
       {loading && <p style={{ textAlign: "center" }}>Loading products...</p>}
-      {error && <p style={styles.error}>{error}</p>}
+      {error && <p style={{ color: "red", textAlign: "center" }}>{error}</p>}
 
       {/* PRODUCTS */}
       <div style={styles.grid}>
@@ -91,7 +108,7 @@ export default function Shop() {
         ))}
       </div>
 
-      {/* FLOATING CART */}
+      {/* CART BUTTON */}
       <div
         style={styles.floatingCart}
         onClick={() => setOpenCart(!openCart)}
@@ -99,13 +116,13 @@ export default function Shop() {
         🛒 {cart.length}
       </div>
 
-      {/* CART POPUP */}
+      {/* CART */}
       {openCart && (
         <div style={styles.cartPopup}>
           <h3>🛍️ Your Cart</h3>
 
           {cart.length === 0 ? (
-            <p style={styles.empty}>No items yet 🌿</p>
+            <p>No items yet 🌿</p>
           ) : (
             <>
               {cart.map((item, i) => (
@@ -122,12 +139,13 @@ export default function Shop() {
 
               <h4 style={styles.total}>Total: Ksh {total}</h4>
 
-              {/* ✅ BUY NOW BUTTON */}
+              {/* 💳 BUY NOW BUTTON (NEW) */}
               <button
-                onClick={() =>
-                  navigate("/makepayment", { state: { cart } })
-                }
-                style={styles.buyNowBtn}
+                onClick={handleBuyNow}
+                style={{
+                  ...styles.buyBtn,
+                  marginBottom: "8px",
+                }}
               >
                 Buy Now 💳
               </button>
@@ -150,6 +168,7 @@ export default function Shop() {
   );
 }
 
+/* STYLES */
 const styles = {
   page: {
     minHeight: "100vh",
@@ -173,6 +192,8 @@ const styles = {
     borderRadius: "12px",
     padding: "15px",
     border: "1px solid #A3E4D7",
+    display: "flex",
+    flexDirection: "column",
   },
 
   image: {
@@ -180,31 +201,21 @@ const styles = {
     height: "180px",
     objectFit: "cover",
     borderRadius: "10px",
+    transition: "0.3s",
   },
 
-  title: {
-    color: "#16A085",
-    marginTop: "10px",
-  },
-
-  desc: {
-    fontSize: "14px",
-    color: "#555",
-  },
-
-  price: {
-    color: "#138D75",
-    marginTop: "10px",
-  },
+  title: { color: "#16A085", marginTop: "10px" },
+  desc: { fontSize: "14px", color: "#555" },
+  price: { color: "#138D75", marginTop: "10px" },
 
   button: {
     marginTop: "10px",
-    backgroundColor: "#16A085",
     color: "white",
     border: "none",
     padding: "10px",
     borderRadius: "8px",
     cursor: "pointer",
+    backgroundColor: "#16A085",
   },
 
   floatingCart: {
@@ -253,20 +264,17 @@ const styles = {
     color: "#16A085",
   },
 
-  buyNowBtn: {
-    marginTop: "10px",
+  buyBtn: {
     width: "100%",
-    backgroundColor: "#1a73e8",
+    backgroundColor: "#2ECC71",
     color: "white",
     border: "none",
     padding: "8px",
     borderRadius: "6px",
-    fontWeight: "bold",
     cursor: "pointer",
   },
 
   clearBtn: {
-    marginTop: "10px",
     width: "100%",
     backgroundColor: "#B03A2E",
     color: "white",
@@ -283,15 +291,5 @@ const styles = {
     border: "none",
     padding: "6px",
     borderRadius: "6px",
-  },
-
-  error: {
-    color: "red",
-    textAlign: "center",
-  },
-
-  empty: {
-    textAlign: "center",
-    color: "#777",
   },
 };

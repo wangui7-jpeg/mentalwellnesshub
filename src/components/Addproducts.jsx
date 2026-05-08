@@ -1,172 +1,190 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import Loader from "./Loader";
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
-const Shop = () => {
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+export default function Addproducts() {
 
-  const [cart, setCart] = useState([]);
-  const [showCart, setShowCart] = useState(false);
+  const [product, setProduct] = useState({
+    title: "",
+    price: "",
+    description: "",
+    image: "",
+  });
 
-  const navigate = useNavigate();
+  /* 🌿 HANDLE TEXT INPUTS */
+  const handleChange = (e) => {
+    setProduct({
+      ...product,
+      [e.target.name]: e.target.value,
+    });
+  };
 
-  const API_URL =
-    "http://marthawaruix.alwaysdata.net/api/get_products";
+  /* 🌿 HANDLE IMAGE UPLOAD */
+  const handleImageChange = (e) => {
 
-  const IMG_URL =
-    "http://marthawaruix.alwaysdata.net/static/images/";
+    const file = e.target.files[0];
 
-  // ---------------- FETCH PRODUCTS ----------------
-  const fetchProducts = async () => {
-    try {
-      setLoading(true);
-      setError("");
-
-      const res = await axios.get(API_URL);
-
-      console.log("API RESPONSE:", res.data);
-
-      // safety check (VERY IMPORTANT)
-      if (!Array.isArray(res.data)) {
-        throw new Error("API did not return an array of products");
-      }
-
-      setProducts(res.data);
-      setLoading(false);
-    } catch (err) {
-      setLoading(false);
-      setError(
-        err.response?.data?.message ||
-          err.message ||
-          "Failed to load products"
-      );
+    if (file) {
+      setProduct({
+        ...product,
+        image: URL.createObjectURL(file),
+      });
     }
   };
 
-  useEffect(() => {
-    fetchProducts();
-  }, []);
+  /* 🌿 SUBMIT */
+  const handleSubmit = (e) => {
+    e.preventDefault();
 
-  // ---------------- CART LOGIC ----------------
-  const addToCart = (product) => {
-    setCart((prev) => [...prev, product]);
+    console.log(product);
+
+    alert("Product Added Successfully 🌿");
+
+    setProduct({
+      title: "",
+      price: "",
+      description: "",
+      image: "",
+    });
   };
-
-  const removeFromCart = (index) => {
-    setCart((prev) => prev.filter((_, i) => i !== index));
-  };
-
-  const total = cart.reduce(
-    (sum, item) => sum + Number(item.product_cost || 0),
-    0
-  );
 
   return (
     <div style={styles.page}>
 
-      <h2 style={styles.title}>🛍️ Mental Wellness Shop</h2>
+      <div style={styles.card}>
 
-      {/* STATUS */}
-      {loading && <Loader />}
-      {error && <p style={styles.error}>{error}</p>}
+        <h1 style={styles.title}>
+          Add New Product 📚
+        </h1>
 
-      {/* EMPTY STATE (IMPORTANT) */}
-      {!loading && products.length === 0 && (
-        <p style={styles.empty}>No products found 😢</p>
-      )}
+        <form onSubmit={handleSubmit}>
 
-      {/* PRODUCTS GRID */}
-      <div style={styles.grid}>
-        {products.map((product) => (
-          <div key={product.product_id} style={styles.card}>
+          {/* 🌿 TITLE */}
+          <input
+            type="text"
+            name="title"
+            placeholder="Product title"
+            value={product.title}
+            onChange={handleChange}
+            style={styles.input}
+            required
+          />
 
+          {/* 🌿 PRICE */}
+          <input
+            type="number"
+            name="price"
+            placeholder="Price"
+            value={product.price}
+            onChange={handleChange}
+            style={styles.input}
+            required
+          />
+
+          {/* 🌿 DESCRIPTION */}
+          <textarea
+            name="description"
+            placeholder="Description"
+            value={product.description}
+            onChange={handleChange}
+            style={styles.textarea}
+            required
+          />
+
+          {/* 🌿 IMAGE PICKER */}
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleImageChange}
+            style={styles.input}
+          />
+
+          {/* 🌿 IMAGE PREVIEW */}
+          {product.image && (
             <img
-              src={IMG_URL + product.product_photo}
-              alt={product.product_name}
-              style={styles.image}
-              onError={(e) => {
-                e.target.src =
-                  "https://via.placeholder.com/200x150";
-              }}
+              src={product.image}
+              alt="preview"
+              style={styles.preview}
             />
-
-            <h3>{product.product_name}</h3>
-
-            <p style={styles.desc}>
-              {product.product_description?.slice(0, 80)}...
-            </p>
-
-            <h4 style={styles.price}>
-              Ksh {product.product_cost}
-            </h4>
-
-            <button
-              style={styles.button}
-              onClick={() => addToCart(product)}
-            >
-              Add to Cart 🛒
-            </button>
-
-            <button
-              style={styles.buyBtn}
-              onClick={() =>
-                navigate("/makepayment", {
-                  state: { product },
-                })
-              }
-            >
-              Buy Now
-            </button>
-
-          </div>
-        ))}
-      </div>
-
-      {/* FLOATING CART */}
-      <div
-        style={styles.floatingCart}
-        onClick={() => setShowCart(!showCart)}
-      >
-        🛒 {cart.length}
-      </div>
-
-      {/* CART PANEL */}
-      {showCart && (
-        <div style={styles.cart}>
-          <h3>Your Cart</h3>
-
-          {cart.length === 0 ? (
-            <p>No items</p>
-          ) : (
-            cart.map((item, i) => (
-              <div key={i} style={styles.cartItem}>
-                <span>{item.product_name}</span>
-
-                <button
-                  onClick={() => removeFromCart(i)}
-                  style={styles.removeBtn}
-                >
-                  ✖
-                </button>
-              </div>
-            ))
           )}
 
-          <h4>Total: Ksh {total}</h4>
-
-          <button
-            style={styles.closeBtn}
-            onClick={() => setShowCart(false)}
-          >
-            Close
+          {/* 🌿 BUTTON */}
+          <button type="submit" style={styles.button}>
+            Add Product 🌿
           </button>
-        </div>
-      )}
+
+        </form>
+
+      </div>
+
     </div>
   );
-};
+}
 
-export default Shop;
+/* 🌿 STYLES */
+const styles = {
+
+  page: {
+    minHeight: "100vh",
+    backgroundColor: "#F5FFFD",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: "20px",
+  },
+
+  card: {
+    backgroundColor: "white",
+    width: "100%",
+    maxWidth: "520px",
+    padding: "30px",
+    borderRadius: "22px",
+    boxShadow: "0 6px 18px rgba(0,0,0,0.1)",
+  },
+
+  title: {
+    textAlign: "center",
+    color: "#16A085",
+    marginBottom: "25px",
+    fontSize: "30px",
+  },
+
+  input: {
+    width: "100%",
+    padding: "12px",
+    marginBottom: "15px",
+    borderRadius: "10px",
+    border: "1px solid #ccc",
+    fontSize: "15px",
+    boxSizing: "border-box",
+  },
+
+  textarea: {
+    width: "100%",
+    height: "120px",
+    padding: "12px",
+    marginBottom: "15px",
+    borderRadius: "10px",
+    border: "1px solid #ccc",
+    fontSize: "15px",
+    resize: "none",
+    boxSizing: "border-box",
+  },
+
+  preview: {
+    width: "100%",
+    height: "250px",
+    objectFit: "cover",
+    borderRadius: "15px",
+    marginBottom: "20px",
+  },
+
+  button: {
+    width: "100%",
+    padding: "14px",
+    backgroundColor: "#16A085",
+    color: "white",
+    border: "none",
+    borderRadius: "10px",
+    fontSize: "16px",
+    cursor: "pointer",
+  },
+};

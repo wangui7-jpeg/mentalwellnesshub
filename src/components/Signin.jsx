@@ -46,7 +46,10 @@ const Signin = () => {
   };
 
   return (
-    <div className="row justify-content-center mt-4">
+    <div
+      className="row justify-content-center mt-4"
+      style={{ paddingBottom: "100px" }}   // 👈 adds space before footer
+    >
       <div className="col-md-6 card shadow p-4">
         <h1 style={{ color: "#16A085" }}>Sign In</h1>
 

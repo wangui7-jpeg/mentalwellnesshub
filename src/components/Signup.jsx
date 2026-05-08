@@ -55,27 +55,13 @@ const Signup = () => {
   };
 
   return (
-    <div className="row justify-content-center mt-4">
+    <div className="row justify-content-center mt-4" style={{ paddingBottom: "80px" }}>
       <div className="card col-md-6 shadow p-4">
         <h1 style={{ color: "#16A085" }}>Sign Up</h1>
 
-        {loading && (
-          <h6 style={{ color: "#16A085" }}>
-            Creating your account...
-          </h6>
-        )}
-
-        {success && (
-          <h6 style={{ color: "green" }}>
-            {success}
-          </h6>
-        )}
-
-        {error && (
-          <h6 style={{ color: "red" }}>
-            {error}
-          </h6>
-        )}
+        {loading && <h6 style={{ color: "#16A085" }}>Creating your account...</h6>}
+        {success && <h6 style={{ color: "green" }}>{success}</h6>}
+        {error && <h6 style={{ color: "red" }}>{error}</h6>}
 
         <form onSubmit={handleSubmit}>
           <input

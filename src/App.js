@@ -10,6 +10,8 @@ import Signin from "./components/Signin";
 import Signup from "./components/Signup";
 import Profile from "./components/Profile";
 import Shop from "./components/Shop";
+import Addproducts from "./components/Addproducts";
+import Checkout from "./components/Checkout";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 
@@ -28,6 +30,8 @@ export default function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/shop" element={<Shop />} />
+          <Route path="/addproducts" element={<Addproducts />} />
+          <Route path="/checkout" element={<Checkout />} />                                                    
         </Routes>
       </div>
 

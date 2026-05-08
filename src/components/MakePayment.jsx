@@ -1,143 +1,143 @@
+import axios from "axios";
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import Footer from "./Footer";
 
-const MakePayment = () => {
-  const location = useLocation();
+const Makepayment = () => {
+  const { product } = useLocation().state || {};
   const navigate = useNavigate();
 
-  const cart = location.state?.cart || [];
+  const img_url =
+    "https://kbenkamotho.alwaysdata.net/static/images/";
 
-  const total = cart.reduce(
-    (sum, item) => sum + Number(item.product_cost),
-    0
-  );
+  const [number, setNumber] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState("");
+  const [error, setError] = useState("");
 
-  const [hover, setHover] = useState(false);
+  const handlesubmit = async (e) => {
+    e.preventDefault();
+
+    if (!product) {
+      setError("No product selected");
+      return;
+    }
+
+    setLoading(true);
+    setError("");
+    setSuccess("");
+
+    try {
+      const formdata = new FormData();
+      formdata.append("phone", number);
+      formdata.append("amount", product.product_cost);
+
+      const response = await axios.post(
+        "https://kbenkamotho.alwaysdata.net/api/mpesa_payment",
+        formdata
+      );
+
+      setSuccess(
+        response.data?.message || "Payment request sent successfully"
+      );
+    } catch (err) {
+      setError(
+        err.response?.data?.message ||
+          err.message ||
+          "Payment failed"
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-    <div style={styles.page}>
+    <div className="container mt-4">
 
-      <h2 style={styles.title}>💳 Checkout</h2>
+      {/* BACK BUTTON */}
+      <button
+        className="btn btn-primary mb-3"
+        onClick={() => navigate("/shop")}
+      >
+        ← Back to Shop
+      </button>
 
-      {cart.length === 0 ? (
-        <div style={styles.empty}>
-          <p>Your cart is empty 😢</p>
-          <button style={styles.btn} onClick={() => navigate("/shop")}>
-            Go Back to Shop
-          </button>
-        </div>
+      <h1 className="text-success text-center">
+        Make Payment - M-Pesa
+      </h1>
+
+      {/* IF NO PRODUCT */}
+      {!product ? (
+        <p className="text-danger text-center">
+          No product selected. Please go back to shop.
+        </p>
       ) : (
-        <div style={styles.card}>
+        <div className="row justify-content-center">
+          <div className="col-md-6 card shadow p-4">
 
-          {/* ITEMS */}
-          {cart.map((item, index) => (
-            <div key={index} style={styles.item}>
-              <span>{item.product_name}</span>
-              <span>Ksh {item.product_cost}</span>
-            </div>
-          ))}
+            {/* IMAGE */}
+            <img
+              src={img_url + product.product_photo}
+              alt={product.product_name}
+              style={{
+                width: "100%",
+                height: "250px",
+                objectFit: "cover",
+                borderRadius: "10px",
+              }}
+            />
 
-          {/* TOTAL */}
-          <div style={styles.totalBox}>
-            <span>Total</span>
-            <span>Ksh {total}</span>
+            <h2 className="text-info mt-3">
+              {product.product_name}
+            </h2>
+
+            <p>{product.product_description}</p>
+
+            <h3 className="text-warning">
+              Kes {product.product_cost}
+            </h3>
+
+            {/* STATUS */}
+            {loading && (
+              <p className="text-info">Processing payment...</p>
+            )}
+
+            {success && (
+              <p className="text-success">{success}</p>
+            )}
+
+            {error && (
+              <p className="text-danger">{error}</p>
+            )}
+
+            {/* FORM */}
+            <form onSubmit={handlesubmit}>
+              <input
+                type="number"
+                className="form-control"
+                placeholder="Enter phone (2547XXXXXXXX)"
+                required
+                value={number}
+                onChange={(e) => setNumber(e.target.value)}
+              />
+
+              <br />
+
+              <button
+                type="submit"
+                className="btn btn-success w-100"
+                disabled={loading}
+              >
+                {loading ? "Sending..." : "Pay with M-Pesa"}
+              </button>
+            </form>
           </div>
-
-          {/* PAY BUTTON */}
-          <button
-            style={{
-              ...styles.payBtn,
-              backgroundColor: hover ? "#138D75" : "#16A085",
-              transform: hover ? "scale(1.02)" : "scale(1)",
-            }}
-            onMouseEnter={() => setHover(true)}
-            onMouseLeave={() => setHover(false)}
-            onClick={() => alert("Payment integration coming soon 💳")}
-          >
-            Pay Now 💳
-          </button>
-
         </div>
       )}
 
+      <Footer />
     </div>
   );
 };
 
-export default MakePayment;
-
-const styles = {
-  page: {
-    minHeight: "100vh",
-    background: "#F5FFFD",
-    padding: "100px 20px",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-
-  title: {
-    color: "#16A085",
-    marginBottom: "20px",
-    fontWeight: "bold",
-    textAlign: "center",
-  },
-
-  card: {
-    width: "100%",
-    maxWidth: "450px",
-    background: "#fff",
-    padding: "25px",
-    borderRadius: "14px",
-    boxShadow: "0 6px 18px rgba(0,0,0,0.12)",
-    border: "1px solid #A3E4D7",
-  },
-
-  item: {
-    display: "flex",
-    justifyContent: "space-between",
-    padding: "10px 0",
-    borderBottom: "1px solid #eee",
-    fontSize: "15px",
-    color: "#333",
-  },
-
-  totalBox: {
-    marginTop: "15px",
-    paddingTop: "10px",
-    borderTop: "2px solid #16A085",
-    display: "flex",
-    justifyContent: "space-between",
-    fontWeight: "bold",
-    fontSize: "18px",
-    color: "#16A085",
-  },
-
-  payBtn: {
-    width: "100%",
-    marginTop: "20px",
-    padding: "12px",
-    color: "white",
-    border: "none",
-    borderRadius: "10px",
-    cursor: "pointer",
-    fontWeight: "bold",
-    fontSize: "15px",
-    transition: "0.2s ease",
-  },
-
-  btn: {
-    padding: "10px 15px",
-    background: "#1a73e8",
-    color: "white",
-    border: "none",
-    borderRadius: "8px",
-    cursor: "pointer",
-    marginTop: "10px",
-  },
-
-  empty: {
-    textAlign: "center",
-    color: "#777",
-  },
-};
+export default Makepayment;
