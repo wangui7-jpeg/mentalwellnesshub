@@ -12,6 +12,7 @@ import Profile from "./components/Profile";
 import Shop from "./components/Shop";
 import Addproducts from "./components/Addproducts";
 import Checkout from "./components/Checkout";
+import Chatbot from "./components/Chatbot";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 

@@ -6,6 +6,7 @@ import MoodCheckIn from "./MoodCheckIn";
 import QuickJournal from "./QuickJournal";
 import QuoteOfTheDay from "./QuoteOfTheDay";
 import BreathingExercise from "./BreathingExercise";
+import Chatbot from "./Chatbot";
 
 export default function Home() {
   const [loading, setLoading] = useState(true);
@@ -67,6 +68,9 @@ export default function Home() {
           <div style={homeStyles.card}><BreathingExercise /></div>
         </div>
       </section>
+
+      {/* CHATBOT */}
+      <Chatbot />
 
     </div>
   );

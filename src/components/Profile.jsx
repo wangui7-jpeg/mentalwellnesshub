@@ -1,11 +1,13 @@
 import { useState } from "react";
 
 export default function Profile() {
+
   // 🌿 Get logged in user
   const user = JSON.parse(localStorage.getItem("user"));
 
   // 🌿 States
   const [bio, setBio] = useState("");
+
   const [profileImage, setProfileImage] = useState(
     "https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
   );
@@ -22,10 +24,12 @@ export default function Profile() {
 
   return (
     <div style={styles.page}>
+
       <div style={styles.card}>
 
         {/* 🌿 PROFILE IMAGE */}
         <div style={styles.imageSection}>
+
           <img
             src={profileImage}
             alt="profile"
@@ -38,6 +42,7 @@ export default function Profile() {
             onChange={handleImageChange}
             style={styles.fileInput}
           />
+
         </div>
 
         {/* 🌿 USER INFO */}
@@ -51,7 +56,10 @@ export default function Profile() {
 
         {/* 🌿 ABOUT SECTION */}
         <div style={styles.section}>
-          <h2 style={styles.sectionTitle}>About Me 💚</h2>
+
+          <h2 style={styles.sectionTitle}>
+            About Me 💚
+          </h2>
 
           <textarea
             placeholder="Write something about yourself..."
@@ -59,10 +67,12 @@ export default function Profile() {
             onChange={(e) => setBio(e.target.value)}
             style={styles.textarea}
           />
+
         </div>
 
         {/* 🌿 WELLNESS GOALS */}
         <div style={styles.section}>
+
           <h2 style={styles.sectionTitle}>
             Mental Wellness Goals 🌱
           </h2>
@@ -73,10 +83,12 @@ export default function Profile() {
             <li>🧘 Reduce stress and anxiety</li>
             <li>📖 Journal consistently</li>
           </ul>
+
         </div>
 
         {/* 🌿 STATS */}
         <div style={styles.stats}>
+
           <div style={styles.statCard}>
             <h2 style={styles.statNumber}>12</h2>
             <p>Journal Entries</p>
@@ -91,45 +103,54 @@ export default function Profile() {
             <h2 style={styles.statNumber}>15</h2>
             <p>Breathing Sessions</p>
           </div>
+
         </div>
 
       </div>
+
     </div>
   );
 }
 
 /* 🌿 STYLES */
+
 const styles = {
+
   page: {
     minHeight: "100vh",
     backgroundColor: "#F5FFFD",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    padding: "100px 20px",
+    paddingTop: "140px",
+    paddingBottom: "60px",
+    paddingLeft: "20px",
+    paddingRight: "20px",
+    boxSizing: "border-box",
   },
 
   card: {
     width: "100%",
     maxWidth: "750px",
     backgroundColor: "white",
-    borderRadius: "20px",
-    padding: "35px",
+    borderRadius: "24px",
+    padding: "40px",
     boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
+    boxSizing: "border-box",
   },
 
   imageSection: {
     textAlign: "center",
-    marginBottom: "20px",
+    marginBottom: "25px",
   },
 
   image: {
-    width: "130px",
-    height: "130px",
+    width: "140px",
+    height: "140px",
     borderRadius: "50%",
     objectFit: "cover",
-    border: "4px solid #16A085",
-    marginBottom: "10px",
+    border: "5px solid #16A085",
+    marginBottom: "15px",
   },
 
   fileInput: {
@@ -139,33 +160,37 @@ const styles = {
   name: {
     textAlign: "center",
     color: "#16A085",
-    marginBottom: "5px",
+    marginBottom: "8px",
+    fontSize: "32px",
   },
 
   email: {
     textAlign: "center",
     color: "#777",
-    marginBottom: "30px",
+    marginBottom: "35px",
+    fontSize: "16px",
   },
 
   section: {
-    marginBottom: "30px",
+    marginBottom: "35px",
   },
 
   sectionTitle: {
     color: "#138D75",
-    marginBottom: "10px",
+    marginBottom: "12px",
+    fontSize: "24px",
   },
 
   textarea: {
     width: "100%",
-    height: "120px",
-    borderRadius: "10px",
+    height: "130px",
+    borderRadius: "12px",
     border: "1px solid #ccc",
-    padding: "12px",
+    padding: "14px",
     fontSize: "15px",
     resize: "none",
     outline: "none",
+    boxSizing: "border-box",
   },
 
   list: {
@@ -183,14 +208,15 @@ const styles = {
 
   statCard: {
     backgroundColor: "#E8F8F5",
-    borderRadius: "14px",
+    borderRadius: "16px",
     padding: "25px",
     textAlign: "center",
   },
 
   statNumber: {
     color: "#16A085",
-    fontSize: "32px",
+    fontSize: "34px",
     marginBottom: "10px",
   },
+
 };

@@ -23,6 +23,7 @@ export default function Navbar() {
     paddingBottom: "4px",
     borderBottom: isActive ? "2px solid #A3E4D7" : "2px solid transparent",
     transition: "0.2s ease",
+    whiteSpace: "nowrap",
   });
 
   return (
@@ -31,27 +32,37 @@ export default function Navbar() {
 
       <div style={styles.links}>
         <NavLink to="/" style={linkStyle}>Home</NavLink>
+
         <NavLink to="/about" style={linkStyle}>About</NavLink>
+
         <NavLink to="/shop" style={linkStyle}>Shop</NavLink>
 
-        {/* ✅ FIXED ROUTE */}
         <NavLink to="/addproducts" style={linkStyle}>
           Sell Books
         </NavLink>
 
-        <NavLink to="/mentorship" style={linkStyle}>Mentorship</NavLink>
+        <NavLink to="/mentorship" style={linkStyle}>
+          Mentorship
+        </NavLink>
 
         {!user ? (
           <>
-            <NavLink to="/signin" style={linkStyle}>Signin</NavLink>
-            <NavLink to="/signup" style={linkStyle}>Signup</NavLink>
+            <NavLink to="/signin" style={linkStyle}>
+              Signin
+            </NavLink>
+
+            <NavLink to="/signup" style={linkStyle}>
+              Signup
+            </NavLink>
           </>
         ) : (
           <>
-            <NavLink to="/profile" style={linkStyle}>Profile</NavLink>
+            <NavLink to="/profile" style={linkStyle}>
+              Profile
+            </NavLink>
 
             <span style={styles.user}>
-              {user.username} 👋
+              👤 {user.username}
             </span>
 
             <button onClick={logout} style={styles.logout}>
@@ -74,13 +85,18 @@ const styles = {
     color: "white",
     position: "fixed",
     top: 0,
+    left: 0,
     width: "100%",
     zIndex: 1000,
     boxShadow: "0 2px 10px rgba(0,0,0,0.15)",
+    boxSizing: "border-box",
+    flexWrap: "wrap",
   },
 
   logo: {
     margin: 0,
+    fontSize: "24px",
+    whiteSpace: "nowrap",
   },
 
   links: {
@@ -88,18 +104,23 @@ const styles = {
     gap: "18px",
     alignItems: "center",
     flexWrap: "wrap",
+    marginTop: "10px",
   },
 
   user: {
     fontWeight: "bold",
+    backgroundColor: "#138D75",
+    padding: "6px 10px",
+    borderRadius: "6px",
   },
 
   logout: {
-    backgroundColor: "#138D75",
+    backgroundColor: "#117864",
     color: "white",
     border: "none",
-    padding: "6px 10px",
+    padding: "7px 12px",
     borderRadius: "6px",
     cursor: "pointer",
+    fontWeight: "bold",
   },
 };

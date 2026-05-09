@@ -158,5 +158,6 @@ const styles = {
     color: "white",
     border: "none",
     padding: "8px 12px",
+    cursor: "pointer",
   },
 };
